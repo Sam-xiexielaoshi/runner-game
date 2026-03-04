@@ -75,7 +75,6 @@ int main(){
     heroData.updateTime = 1.0/12.0;
     heroData.runningTime = 0.0;
 
-
     bool isInAir{};
 
     //jump vel pixels/sec
