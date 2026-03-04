@@ -42,7 +42,7 @@ int main(){
     //obstacle variables
     Texture2D obstacle = LoadTexture("textures/12_nebula_spritesheet.png");
 
-    const int numberOfOb{6};
+    const int numberOfOb{2};
     AnimData ob[numberOfOb]{};
 
     for(int i=0;i<numberOfOb;i++){
@@ -91,6 +91,9 @@ int main(){
     float fgX{};
 
     bool collision_with_obstacle = false;
+
+    bool collision{};
+
     //set fps
     SetTargetFPS(60);
 
@@ -170,13 +173,42 @@ int main(){
             ob[i]=updateAnimData(ob[i], dt, 7);
         }
 
-        //draw obstacle
-        for(int i=0; i<numberOfOb;i++){
-            DrawTextureRec(obstacle,ob[i].rec,ob[i].pos,WHITE);
+        for(AnimData obstacle:ob){
+            float pad{50};
+            Rectangle obstacleRec{
+                obstacle.pos.x+pad,
+                obstacle.pos.y+pad,
+                obstacle.rec.width-2*pad,
+                obstacle.rec.height-2*pad
+            };
+            Rectangle heroRec{
+                heroData.pos.x,
+                heroData.pos.y,
+                heroData.rec.width,
+                heroData.rec.height
+            };
+            if(CheckCollisionRecs(obstacleRec, heroRec)){
+                collision=true;
+            }
         }
+        if(collision){
+                //lose condition
+                DrawText("Game Over!",windowDimensions[0]/3,windowDimensions[1]/2,40,RED);
+            }else if(heroData.pos.x>=finishLine){
+                //win condition
+                DrawText("You Win!",windowDimensions[0]/3,windowDimensions[1]/2,40,GREEN);
+            }
+            else{
+                //draw obstacle
+                for(int i=0; i<numberOfOb;i++){
+                    DrawTextureRec(obstacle,ob[i].rec,ob[i].pos,WHITE);
+                }
+        
+                //draw hero
+                DrawTextureRec(hero, heroData.rec, heroData.pos, WHITE);
 
-        //draw hero
-        DrawTextureRec(hero, heroData.rec, heroData.pos, WHITE);
+            }
+
 
         //end drawing
         EndDrawing();
